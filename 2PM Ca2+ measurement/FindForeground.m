@@ -1,0 +1,66 @@
+function ImageMask =  FindForeground(Image,Punish)
+
+IterationNum=30;
+ShowPlot=0;
+
+% This function is to help find the foreground of the image
+
+I=find(Image);
+M = median(Image(I));
+Mask_start_ID=find(Image>=M);
+Mask_start=zeros(size(Image));
+Mask_start(Mask_start_ID)=1;
+CV_Mask=activecontour(Image,Mask_start,20,'Chan-Vese','ContractionBias',Punish);
+
+if ShowPlot==1
+hd000=figure;hold on;
+imagesc(Image);
+set(gca,'Ydir', 'reverse');
+axis image;
+axis off;
+axis ij;
+colormap(gray);
+
+[row,col]=find(CV_Mask);
+plot(col,row,'r.','MarkerSize',1);
+
+pause;
+close(hd000);
+
+
+end
+
+ImageMask =CV_Mask;
+
+
+% 
+% 
+% 
+% 
+% if ShowPlot
+%     hd000=figure;hold on;
+%     histogram(Image(I),30);
+%     mylim=ylim;
+%     plot([M M],mylim,'r--');
+% end
+% 
+% kk=1;
+% while kk<=IterationNum
+%     ForegroundID_New=find(Image>=M);
+%     BackgroundID_New=find(Image>0&Image<M);
+%     
+%     BackgroundPixels=Image(BackgroundID_New);
+%     ForegroundPixels=Image(ForegroundID_New);
+%     
+%     mean(ForegroundPixels)
+%     
+%     if mean(ForegroundPixels)>mean(BackgroundPixels)+std(BackgroundPixels)*Thld
+%         M=M+5;
+%     elseif mean(ForegroundPixels)>mean(BackgroundPixels)+std(BackgroundPixels)*Thld
+%         M=M-5;
+%     else
+%         break;
+%     end
+% 
+%     kk=kk+1;
+% end
